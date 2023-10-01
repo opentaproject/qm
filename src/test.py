@@ -1,17 +1,17 @@
 from unittest import TestCase
-from .fockspace import FockSpace;
+from .fockspace import FiniteBosonFockSpace;
 from .qm import qm_compare
 
 class Test1_QM(TestCase):
 
     def test_intro(self):
-        global_text = ' f = FockSpace(\"a\"); a = f.B; ad = dagger(a); n = var(\"n\")  ; ket = f.ket; bra = f.bra; ';
+        global_text = ' f = FiniteBosonFockSpace(\"a\"); a = f.B; ad = dagger(a); n = var(\"n\")  ; ket = f.ket; bra = f.bra; ';
         self.assertTrue(qm_compare("a ad ", "1 +   ad a ", global_text)['correct'])
         self.assertTrue(qm_compare("2 ad a + ad^2 a^2 ", "a ad^2 a", global_text)['correct'])
         self.assertTrue(qm_compare("bra(n) a ad^2 a ket(n)  ", "n*(n+1)", global_text)['correct'])
 
     def test_fock_space(self):
-        global_text = "f = FockSpace(\"a\"); \
+        global_text = "f = FiniteBosonFockSpace(\"a\"); \
             a = f.B; \
             ad = dagger(a);  \
             n = var(\"n\")  ; \
@@ -48,7 +48,7 @@ class Test1_QM(TestCase):
         self.assertTrue(qm_compare(s1,s2, global_text)['correct'])
 
     def test_boson_commutator(self):
-        global_text = "f = FockSpace(\"a\"); \
+        global_text = "f = FiniteBosonFockSpace(\"a\"); \
             hbar = var(\"hbar\"); \
             omega = var(\"omega\"); \
             a = f.B; \

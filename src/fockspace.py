@@ -1,4 +1,4 @@
-from sympy import Expr, Add, Mul, Matrix, Pow, sympify, simplify, latex
+from sympy import Expr, Add, Mul, Matrix, Pow, sympify, simplify, latex,  sqrt
 from sympy.core.sympify import SympifyError
 from sympy.physics.quantum.operatorordering import normal_ordered_form 
 from sympy.physics.quantum.boson import BosonOp, BosonFockKet, BosonFockBra ;
@@ -24,10 +24,10 @@ def no(x):
 
 
 
-class FockSpace(Expr) :
+class FiniteBosonFockSpace(Expr) :
 
     def __init__(self,labels ):
-        self.name = f"FockSpace({labels})";
+        self.name = f"FiniteBosonFockSpace({labels})";
         self.labels = labels;
         
         if isinstance( labels , list ) :

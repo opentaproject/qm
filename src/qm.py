@@ -2,10 +2,10 @@
 import logging
 import re as resub
 
-try :
-    from exercises.questiontypes.safe_run import safe_run
-except:
-    pass
+#try :
+#    from exercises.questiontypes.safe_run import safe_run
+#except:
+#    pass
 import sympy
 from sympy import *
 from sympy.core.sympify import SympifyError
@@ -13,7 +13,7 @@ from sympy.physics.quantum.operatorordering import normal_ordered_form
 from sympy.physics.quantum.boson import BosonOp, BosonFockKet, BosonFockBra ;
 from sympy.physics.quantum import TensorProduct
 from sympy.physics.quantum import Dagger, qapply 
-from .fockspace import FockSpace
+from fockspace import *
 logger = logging.getLogger(__name__)
 
 
@@ -44,7 +44,7 @@ class no(sympy.Function):
 #
 ns.update(
     {
-        "FockSpace" : FockSpace,
+        "FiniteBosonFockSpace" : FiniteBosonFockSpace,
         "tp" : TensorProduct,   
         "qapply": qapply,
         "bket" : BosonFockKet,
