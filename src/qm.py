@@ -13,7 +13,7 @@ from sympy.physics.quantum.operatorordering import normal_ordered_form
 from sympy.physics.quantum.boson import BosonOp, BosonFockKet, BosonFockBra ;
 from sympy.physics.quantum import TensorProduct
 from sympy.physics.quantum import Dagger, qapply 
-from fockspace import *
+from .fockspace import *
 logger = logging.getLogger(__name__)
 
 
