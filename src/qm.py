@@ -122,8 +122,8 @@ def qm_compare(expression1, expression2,global_text):  # {{{
         #print("sympy1 = ",  srepr( sympy1) )
         #print("sympy2 = ",  srepr( sympy2) )
         if  f :
-            sympy1 = f.reduce(  sympy1 * f.bra() );
-            sympy2 = f.reduce(  sympy2 * f.bra() );
+            sympy1 = f.reduce_to_canonical(  sympy1 * f.bra() );
+            sympy2 = f.reduce_to_canonical(  sympy2 * f.bra() );
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug("Expression 1: " + str(sympy1))
             logger.debug("Expression 2: " + str(sympy2))

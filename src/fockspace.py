@@ -56,6 +56,7 @@ class FiniteBosonFockSpace(Expr) :
         while not xnew == x :
             x = xnew ;
             xnew = normal_ordered_form( ( qapply(  x ) ).expand( force=True, power_expand=False) , independent=True );
+        xnew = xnew.replace( TensorProduct, self.tp );
         return xnew
 
         
@@ -98,8 +99,9 @@ class FiniteBosonFockSpace(Expr) :
         else :
             return 1
 
-    def reduce( self, ex ):
-        res = self.no(ex);
+    def reduce_to_canonical( self, ex ):
+        res = ex;
+        res = self.no(res);
         res = simplify( doapply( res ).doit() );
         if isinstance( self.labels, list ):
             res = res.subs( self.one(), 1 );
