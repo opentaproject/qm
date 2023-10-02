@@ -5,15 +5,15 @@ from .qm import qm_compare
 class Test1_QM(TestCase):
 
     def test_intro(self):
-        global_text = ' f = FiniteBosonFockSpace(\"a\"); a = f.B; ad = dagger(a); n = var(\"n\")  ; ket = f.ket; bra = f.bra; ';
+        global_text = 'f = FiniteBosonFockSpace(\"a\"); a = f.B; ad = dagger(a); n = var(\"n\")  ; ket = f.ket; bra = f.bra; ';
         self.assertTrue(qm_compare("a ad ", "1 +   ad a ", global_text)['correct'])
         self.assertTrue(qm_compare("2 ad a + ad^2 a^2 ", "a ad^2 a", global_text)['correct'])
         self.assertTrue(qm_compare("bra(n) a ad^2 a ket(n)  ", "n*(n+1)", global_text)['correct'])
 
-    def test_fock_space(self):
+    def test_single_particle_boson_fock_space(self):
         global_text = "f = FiniteBosonFockSpace(\"a\"); \
             a = f.B; \
-            ad = dagger(a);  \
+            ad = f.Bd;  \
             n = var(\"n\")  ; \
             ket = f.ket; \
             bra = f.bra; \
@@ -47,7 +47,7 @@ class Test1_QM(TestCase):
         s2 = "H a ket(n)";
         self.assertTrue(qm_compare(s1,s2, global_text)['correct'])
 
-    def test_boson_commutator(self):
+    def test_single_particle_boson_commutator(self):
         global_text = "f = FiniteBosonFockSpace(\"a\"); \
             hbar = var(\"hbar\"); \
             omega = var(\"omega\"); \
@@ -60,8 +60,8 @@ class Test1_QM(TestCase):
             H= hbar * omega * ( ad * a + 1/2 ); \
             "
         # N ad ket(n) 
-        s1 = "com(a,ad)"
-        s2 = "1"
+        s1 = "( a * ad - ad * a ) "
+        s2 = "( 1 )";
         self.assertTrue(qm_compare(s1,s2, global_text)['correct'])
 
         s1 = "com(a,N)"
@@ -80,7 +80,15 @@ class Test1_QM(TestCase):
         s2 = "hbar omega ad " ;
         self.assertTrue(qm_compare(s1,s2, global_text)['correct'])
 
-
+    def test_commutative_and_noncommutative_operators(self) : 
+        # TEST NONCOMMUTATIVE SYMBOLS  DEFINED BY "op" ;
+        # AND COMMUTATIVE SYMBOLS DEFINED BY "var";
+        global_text = f"a = var(\"a\") ; b = var(\"b\") ;"
+        self.assertTrue( qm_compare( "a b ", "b a ", global_text )['correct']);
+        self.assertTrue( qm_compare( "com(a,b)", "0 ", global_text )['correct']);
+        global_text = f"a = op(\"a\") ; b = op(\"b\") ;"
+        self.assertFalse( qm_compare( "a b ", "b a ", global_text )['correct']);
+        self.assertFalse( qm_compare( "com(a,b)", "0 ", global_text )['correct']);
 
 
 

@@ -28,17 +28,6 @@ class com(sympy.Function):
     def eval(cls, x, y ):
         return x*y - y*x
 
-class no(sympy.Function):
-    nargs = 1
-    @classmethod
-    def eval(cls, x ):
-        xnew = normal_ordered_form( expand( qapply( x ) ), independent=True );
-        while not xnew == x :
-            x = xnew ;
-            xnew = normal_ordered_form( expand( qapply(  x ) ) , independent=True );
-        return xnew
-
-
 #
 # Future-protect source by hiding connection to sympy.quantum
 #
@@ -54,7 +43,7 @@ ns.update(
         "var" : Symbol,
         "dagger" : Dagger,
         "com": com,
-        "no": no,
+        "op" : lambda x : Symbol(x, commutative=False),
         "zeta": zeta,
         "N": N,
         "Q": Q,
@@ -109,21 +98,29 @@ def bd(s) :
 def qm_compare(expression1, expression2,global_text):  # {{{
     # Do some initial formatting
     response = {}
-    print(f"QUANTUM_INTERNAL GLOBAL_TEXT = {global_text}")
     p = ";\n".join( [ item.strip() for item in global_text.split(";") ] )
     try:
+        fockspacedef =  [ i for i in p.split(';') if "FiniteBosonFockSpace" in i ];
         ns.update( globals() )
-        exec( p , ns )
-        print(f" EXPRESSION1 = {expression1}")
-        print(f" EXPRESSION2 = {expression2}")
+        exec( p , ns );
+        f = None;
+        if len( fockspacedef) >  0 :
+            fockspacelabel = ( fockspacedef[0].split('=')[0] ).strip();
+            if fockspacelabel in ns :
+                f = ns[fockspacelabel]
+        #print(f" EXPRESSION1 = {expression1}")
+        #print(f" EXPRESSION2 = {expression2}")
         sexpression1 =  asciiToSympy(expression1) 
         sexpression2 =  asciiToSympy(expression2) 
-        print(f" SEXPRESSION1 = {sexpression1}")
-        print(f" SEXPRESSION2 = {sexpression2}")
-        sympy1 = no( qapply(  sympify(sexpression1, ns) ) )
-        sympy2 = no( qapply( sympify(sexpression2, ns) ) )
-        print("sympy1 = ",  sympy1)
-        print("sympy2 = ",  sympy2)
+        #print(f" SEXPRESSION1 = {sexpression1}")
+        #print(f" SEXPRESSION2 = {sexpression2}")
+        sympy1 = qapply(  sympify(sexpression1, ns) ) 
+        sympy2 = qapply( sympify(sexpression2, ns) ) 
+        #print("sympy1 = ",  srepr( sympy1) )
+        #print("sympy2 = ",  srepr( sympy2) )
+        if  f :
+            sympy1 = f.reduce(  sympy1 * f.bra() );
+            sympy2 = f.reduce(  sympy2 * f.bra() );
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug("Expression 1: " + str(sympy1))
             logger.debug("Expression 2: " + str(sympy2))

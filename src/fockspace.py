@@ -1,10 +1,12 @@
-from sympy import Expr, Add, Mul, Matrix, Pow, sympify, simplify, latex,  sqrt
+from sympy import *;
 from sympy.core.sympify import SympifyError
 from sympy.physics.quantum.operatorordering import normal_ordered_form 
 from sympy.physics.quantum.boson import BosonOp, BosonFockKet, BosonFockBra ;
 from sympy.physics.quantum import TensorProduct, IdentityOperator
 from sympy import Symbol, expand, srepr;
 from sympy.physics.quantum import Dagger, qapply ;
+import logging;
+logger = logging.getLogger(__name__)
 
 def doapply(ex0) :
     ex1 = qapply( ex0, independent=True );
@@ -13,14 +15,13 @@ def doapply(ex0) :
         ex1 =  qapply( ex0 , independent=True);
     return ex1;
 
-def no(x):
-    nargs = 1
-    
-    xnew = normal_ordered_form( expand( qapply( x ) ), independent=True );
-    while not xnew == x :
-       x = xnew ;
-       xnew = normal_ordered_form( expand( qapply(  x ) ) , independent=True );
-    return xnew
+#def no(x):
+#    xnew = normal_ordered_form( expand( qapply( x ) ), independent=True );
+#    while not xnew == x :
+#       x = xnew ;
+#       xnew = normal_ordered_form( expand( qapply(  x ) ) , independent=True );
+#    print(f"APPLYING NO");
+#    return xnew
 
 
 
@@ -47,6 +48,14 @@ class FiniteBosonFockSpace(Expr) :
             self.B = BosonOp( Symbol( labels ) )
             self.Bd = Dagger( BosonOp( Symbol( labels)));
             self.id = IdentityOperator();
+
+    def no(self, x):
+        xnew = normal_ordered_form(  qapply( x  ).expand( force=True, power_expand=False), independent=True );
+        while not xnew == x :
+            x = xnew ;
+            xnew = normal_ordered_form( ( qapply(  x ) ).expand( force=True, power_expand=False) , independent=True );
+        return xnew
+
         
 
     def ket( self, x = None ):
@@ -88,7 +97,7 @@ class FiniteBosonFockSpace(Expr) :
             return 1
 
     def reduce( self, ex ):
-        res = no(ex);
+        res = self.no(ex);
         res = simplify( doapply( res ).doit() );
         if isinstance( self.labels, list ):
             res = res.subs( self.one(), 1 );
