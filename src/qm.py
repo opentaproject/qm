@@ -13,7 +13,10 @@ from sympy.physics.quantum.operatorordering import normal_ordered_form
 from sympy.physics.quantum.boson import BosonOp, BosonFockKet, BosonFockBra ;
 from sympy.physics.quantum import TensorProduct
 from sympy.physics.quantum import Dagger, qapply 
-from .fockspace import *
+try :
+    from .fockspace import *
+except :
+    from fockspace import *
 logger = logging.getLogger(__name__)
 
 
@@ -128,6 +131,7 @@ def qm_compare(expression1, expression2,global_text):  # {{{
         if diffy == 0:
             response["correct"] = True
         else:
+            #print(f" DIFF = {diffy}")
             response["correct"] = False
             response["debug"] = ". Diff reduces to " + str(diffy)
     except SympifyError as e:

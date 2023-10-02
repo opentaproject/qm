@@ -32,8 +32,8 @@ class FiniteBosonFockSpace(Expr) :
         self.labels = labels;
         
         if isinstance( labels , list ) :
-            self.ketlabels = [ 'n' + i for i in self.labels ];
-            self.bralabels = [ 'm' + i for i in self.labels ];
+            self.ketlabels = [ Symbol( 'n' + i, positive=True)  for i in self.labels ];
+            self.bralabels = [ Symbol( 'm' + i, positive=True) for i in self.labels ];
             self.B = {} ;
             self.Bd = {};
             for label in labels :
@@ -48,7 +48,9 @@ class FiniteBosonFockSpace(Expr) :
             self.B = BosonOp( Symbol( labels ) )
             self.Bd = Dagger( BosonOp( Symbol( labels)));
             self.id = IdentityOperator();
-
+    def tp( self, *x ) :
+        s = tuple( [ self.no(i) for i in x ]);
+        return TensorProduct(*s);
     def no(self, x):
         xnew = normal_ordered_form(  qapply( x  ).expand( force=True, power_expand=False), independent=True );
         while not xnew == x :

@@ -1,6 +1,7 @@
 from unittest import TestCase
 from .fockspace import FiniteBosonFockSpace;
-from .qm import qm_compare
+from .qm import qm_compare, com
+from sympy import expand;
 
 class Test1_QM(TestCase):
 
@@ -63,7 +64,6 @@ class Test1_QM(TestCase):
         s1 = "( a * ad - ad * a ) "
         s2 = "( 1 )";
         self.assertTrue(qm_compare(s1,s2, global_text)['correct'])
-
         s1 = "com(a,N)"
         s2 = "a"
         self.assertTrue(qm_compare(s1,s2, global_text)['correct'])
@@ -86,9 +86,13 @@ class Test1_QM(TestCase):
         global_text = f"a = var(\"a\") ; b = var(\"b\") ;"
         self.assertTrue( qm_compare( "a b ", "b a ", global_text )['correct']);
         self.assertTrue( qm_compare( "com(a,b)", "0 ", global_text )['correct']);
-        global_text = f"a = op(\"a\") ; b = op(\"b\") ;"
+        global_text = f"a = op(\"a\") ; b = op(\"b\")  ; c = op(\"c\") ;" 
         self.assertFalse( qm_compare( "a b ", "b a ", global_text )['correct']);
         self.assertFalse( qm_compare( "com(a,b)", "0 ", global_text )['correct']);
+        # test jacobi identity
+        self.assertTrue( qm_compare( "com(a,com(b,c)) + com(b,com(c,a)) + com(c,com(a,b))" , '0' , global_text)['correct']);
+        self.assertFalse( qm_compare( "com(a,com(b,c)) + com(b,com(c,a)) - com(c,com(a,b))" , '0' , global_text)['correct']);
+
 
 
 
