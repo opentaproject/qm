@@ -2,10 +2,10 @@
 import logging
 import re as resub
 
-#try :
-#    from exercises.questiontypes.safe_run import safe_run
-#except:
-#    pass
+try :
+   from exercises.questiontypes.safe_run import safe_run
+except:
+    pass
 import sympy
 from sympy import *
 from sympy.core.sympify import SympifyError
